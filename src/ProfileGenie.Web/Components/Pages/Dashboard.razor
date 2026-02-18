@@ -1,0 +1,29 @@
+@page "/"
+@*
+    Dashboard.razor - Main dashboard page.
+*@
+
+<PageTitle>Dashboard - ProfileGenie</PageTitle>
+
+<h1>Dashboard</h1>
+
+<p>Welcome to ProfileGenie - LinkedIn Profile Scoring System</p>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>Pending Jobs</h3>
+        <p class="stat-value">0</p>
+    </div>
+    <div class="stat-card">
+        <h3>Completed Jobs</h3>
+        <p class="stat-value">0</p>
+    </div>
+    <div class="stat-card">
+        <h3>Average Score</h3>
+        <p class="stat-value">-</p>
+    </div>
+</div>
+
+@code {
+    // TODO: Load actual statistics from the database
+}

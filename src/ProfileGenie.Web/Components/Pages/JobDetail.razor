@@ -1,0 +1,24 @@
+@page "/job/{JobId:guid}"
+@*
+    JobDetail.razor - Job detail page.
+*@
+
+<PageTitle>Job Details - ProfileGenie</PageTitle>
+
+<h1>Job Details</h1>
+
+<div class="job-detail">
+    <p><strong>Job ID:</strong> @JobId</p>
+    <p><em>Job details will be loaded here...</em></p>
+</div>
+
+<div class="actions">
+    <a href="/" class="btn">Back to Dashboard</a>
+</div>
+
+@code {
+    [Parameter]
+    public Guid JobId { get; set; }
+
+    // TODO: Load job details from the database
+}

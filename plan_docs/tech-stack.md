@@ -1,0 +1,196 @@
+# Technology Stack - Job Command Center (ProfileGenie)
+
+**Version:** 1.0  
+**Date:** 2026-02-17  
+**Status:** Approved
+
+---
+
+## 1. Overview
+
+The Job Command Center (ProfileGenie) is built on a modern .NET 9 stack, optimized for local-first execution with maximum stealth capabilities for LinkedIn automation. The technology choices prioritize **account safety**, **data ownership**, and **developer velocity**.
+
+---
+
+## 2. Core Technologies
+
+### 2.1 Language & Runtime
+
+| Component | Technology | Version | Rationale |
+|-----------|-----------|---------|-----------|
+| **Language** | C# | 12 | Modern language features, performance optimizations, pattern matching |
+| **Runtime** | .NET | 9.0 | Latest LTS features, AOT compilation support, improved performance |
+| **SDK** | .NET SDK | 9.0.100+ | Required for Aspire workload |
+
+### 2.2 Framework & Orchestration
+
+| Component | Technology | Version | Rationale |
+|-----------|-----------|---------|-----------|
+| **Orchestration** | .NET Aspire | 9.0 | Simplifies multi-service orchestration, "F5 to run" experience |
+| **UI Framework** | Blazor Server | 9.0 | 100% C# stack, real-time UI updates, direct DB access |
+| **Automation** | Microsoft.Playwright | Latest | Industry standard for browser automation, first-class CDP support |
+
+### 2.3 Data Layer
+
+| Component | Technology | Version | Rationale |
+|-----------|-----------|---------|-----------|
+| **Database** | PostgreSQL | 16+ | Robust relational DB, complex querying capabilities |
+| **ORM** | Entity Framework Core | 9.0 | Type-safe queries, migrations, LINQ support |
+| **Migrations** | EF Core Tools | 9.0 | Schema versioning and deployment |
+
+### 2.4 UI Components
+
+| Component | Technology | Version | Rationale |
+|-----------|-----------|---------|-----------|
+| **Component Library** | MudBlazor | 7.x | High-density DataGrids, Kanban components, Material Design |
+| **Styling** | Bootstrap / Tailwind | TBD | Additional styling flexibility |
+| **Icons** | MudBlazor Icons | 7.x | Consistent iconography |
+
+---
+
+## 3. Infrastructure & DevOps
+
+### 3.1 Containerization
+
+| Component | Technology | Usage |
+|-----------|-----------|-------|
+| **PostgreSQL** | Docker Container | Managed via Aspire `.AddPostgres()` |
+| **Web Dashboard** | Docker-ready | Production deployment on home server/workstation |
+| **Harvester** | **Native Process Only** | **MUST NOT be containerized** - requires host network access |
+
+### 3.2 Logging & Observability
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Telemetry** | OpenTelemetry | Distributed tracing via Aspire Service Defaults |
+| **Structured Logging** | Serilog | JSON logging with context enrichment |
+| **Metrics** | .NET Metrics | Jobs per minute, harvest cycles, error rates |
+
+### 3.3 Development Tools
+
+| Tool | Purpose |
+|------|---------|
+| **dotnet-ef** | EF Core migrations |
+| **dotnet-user-secrets** | Local configuration management |
+| **Playwright CLI** | Browser driver installation |
+
+---
+
+## 4. Project Dependencies
+
+### 4.1 NuGet Packages
+
+```xml
+<!-- Core Framework -->
+<PackageReference Include="Microsoft.AspNetCore.App" />
+<PackageReference Include="Aspire.Hosting" Version="9.0.0" />
+<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.0.0" />
+
+<!-- Automation -->
+<PackageReference Include="Microsoft.Playwright" Version="1.40.0" />
+
+<!-- Data Access -->
+<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
+<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" />
+
+<!-- UI Components -->
+<PackageReference Include="MudBlazor" Version="7.x" />
+
+<!-- Logging -->
+<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.8.0" />
+```
+
+### 4.2 Browser Requirements
+
+| Requirement | Details |
+|-------------|---------|
+| **Chrome** | Desktop installation required |
+| **Launch Flag** | `--remote-debugging-port=9222` |
+| **Alternative** | Chromium/Edge with CDP support |
+
+---
+
+## 5. Development Environment
+
+### 5.1 Prerequisites
+
+- .NET 9 SDK with Aspire workload
+- Docker Desktop (for PostgreSQL container)
+- Chrome/Chromium browser
+- IDE: Visual Studio 2022, VS Code, or JetBrains Rider
+
+### 5.2 Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `global.json` | Pin .NET SDK version |
+| `appsettings.json` | Application configuration |
+| `appsettings.Development.json` | Development overrides |
+| `secrets.json` | User secrets for sensitive data |
+
+---
+
+## 6. Security Considerations
+
+### 6.1 Authentication
+
+- **LinkedIn Auth**: Handled externally by user in Chrome
+- **Application Auth**: None required (local-first)
+
+### 6.2 Data Protection
+
+- **Connection Strings**: Managed via Aspire user secrets (dev)
+- **Production Secrets**: Environment variable injection
+- **Database Passwords**: Auto-generated by Aspire in development
+
+---
+
+## 7. Technology Decision Rationale
+
+### 7.1 Why .NET Aspire?
+
+- Single-command orchestration of DB + UI + Worker
+- Built-in OpenTelemetry integration
+- Simplified service discovery and configuration
+- "F5 to Run" developer experience
+
+### 7.2 Why Blazor Server over React?
+
+- 100% C# codebase - shared DTOs between UI and Harvester
+- No API translation layer needed
+- Real-time UI updates via SignalR
+- Direct EF Core database access
+
+### 7.3 Why Playwright over Selenium/Puppeteer?
+
+- First-class CDP connection support
+- Modern async/await API
+- Robust Shadow DOM handling
+- Built-in auto-waiting mechanisms
+
+### 7.4 Why PostgreSQL over SQLite?
+
+- Complex SQL queries for analytics
+- Long-term data persistence
+- Production-ready scalability
+- Better concurrency handling
+
+---
+
+## 8. Future Technology Considerations
+
+| Consideration | Timeline | Notes |
+|---------------|----------|-------|
+| **Supabase/Cloud SQL** | Phase 4+ | Cloud database for production |
+| **AOT Compilation** | Future | Potential performance gains |
+| **MAUI Desktop App** | Future | Alternative to Blazor Server |
+
+---
+
+## 9. References
+
+- [.NET Aspire Documentation](https://learn.microsoft.com/dotnet/aspire/)
+- [Playwright for .NET](https://playwright.dev/dotnet/)
+- [MudBlazor Components](https://mudblazor.com/)
+- [Entity Framework Core](https://learn.microsoft.com/ef/core/)
